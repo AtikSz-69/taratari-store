@@ -1,0 +1,7 @@
+name = "taratari-store"
+compatibility_date = "2024-12-05"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "taratari_db"
+database_id = "668d8eff-1af1-48e1-8993-6557a1b4a2a9"
