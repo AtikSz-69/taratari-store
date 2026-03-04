@@ -3,10 +3,12 @@ import { Search, ShoppingCart, Menu, User, Bell, Zap, X } from 'lucide-react';
 import { Button } from './ui/Button';
 import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES } from '@/data/mockData';
+import { useCart } from '@/context/CartContext';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const { totalItems, setCartOpen } = useCart();
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
@@ -51,24 +53,26 @@ export default function Header() {
             <Button variant="ghost" size="icon" className="hidden sm:flex text-gray-600">
               <Bell size={20} />
             </Button>
-            
+
             <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-gray-700 font-medium">
               <User size={20} />
               <span>Sign In</span>
             </Button>
 
             <div className="relative">
-              <Button variant="outline" size="icon" className="text-gray-700 border-gray-200">
+              <Button variant="outline" size="icon" className="text-gray-700 border-gray-200" onClick={() => setCartOpen(true)}>
                 <ShoppingCart size={20} />
               </Button>
-              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white">
-                3
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white">
+                  {totalItems}
+                </span>
+              )}
             </div>
 
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="md:hidden"
               onClick={() => setIsMenuOpen(true)}
             >
@@ -108,7 +112,7 @@ export default function Header() {
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -128,18 +132,18 @@ export default function Header() {
                   <X size={20} />
                 </Button>
               </div>
-              
+
               <div className="p-4 flex flex-col gap-4 overflow-y-auto flex-1">
                 <Button className="w-full justify-start gap-2" variant="primary">
                   <User size={18} /> Sign In / Register
                 </Button>
-                
+
                 <div className="space-y-1">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Categories</h3>
                   {CATEGORIES.map((cat) => (
-                    <a 
-                      key={cat.id} 
-                      href="#" 
+                    <a
+                      key={cat.id}
+                      href="#"
                       className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md text-gray-700"
                     >
                       <span>{cat.name}</span>

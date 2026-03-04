@@ -2,14 +2,17 @@ import { Product } from '@/data/mockData';
 import { Button } from './ui/Button';
 import { Star, ShoppingCart, Heart, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { addItem } = useCart();
+
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -5 }}
       className="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden relative"
     >
@@ -34,17 +37,17 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Image Container */}
       <div className="relative aspect-video overflow-hidden bg-gray-100">
-        <img 
-          src={product.image} 
-          alt={product.title} 
+        <img
+          src={product.image}
+          alt={product.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
           referrerPolicy="no-referrer"
         />
-        
+
         {/* Quick Add Overlay */}
         <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/60 to-transparent">
-          <Button size="sm" className="w-full bg-white text-gray-900 hover:bg-gray-100 border-0 shadow-lg">
+          <Button size="sm" className="w-full bg-white text-gray-900 hover:bg-gray-100 border-0 shadow-lg" onClick={() => addItem(product)}>
             <ShoppingCart size={14} className="mr-2" /> Quick Add
           </Button>
         </div>
@@ -57,15 +60,15 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.platform}
           </span>
           <div className="flex items-center gap-1 ml-auto text-yellow-500">
-             <Star size={10} className="fill-current" />
-             <span className="text-xs font-medium text-gray-600">{product.rating}</span>
+            <Star size={10} className="fill-current" />
+            <span className="text-xs font-medium text-gray-600">{product.rating}</span>
           </div>
         </div>
 
         <h3 className="font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-red-600 transition-colors" title={product.title}>
           {product.title}
         </h3>
-        
+
         <div className="mt-auto flex items-center justify-between">
           <div>
             <div className="flex items-baseline gap-2">
@@ -75,7 +78,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-1 text-xs text-green-600 font-medium">
             <Zap size={12} className="fill-current" />
             <span>Instant</span>
