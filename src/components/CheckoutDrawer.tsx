@@ -47,15 +47,16 @@ export default function CheckoutDrawer() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name: form.name.trim(),
-                    phone: form.phone.trim(),
-                    address: form.address.trim(),
-                    cart: items.map((item) => ({
+                    customer_name: form.name.trim(),
+                    customer_phone: form.phone.trim(),
+                    customer_address: form.address.trim(),
+                    items_json: JSON.stringify(items.map((item) => ({
                         id: Number(item.id),
                         name: item.title,
                         price: item.price,
                         quantity: item.quantity,
-                    })),
+                    }))),
+                    total_amount: totalPrice,
                 }),
             });
 
