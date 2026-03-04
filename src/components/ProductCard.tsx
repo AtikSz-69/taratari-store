@@ -1,5 +1,4 @@
 import { Product } from '@/data/mockData';
-import { Button } from './ui/Button';
 import { Star, ShoppingCart, Heart, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useCart } from '@/context/CartContext';
@@ -9,7 +8,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { addItem } = useCart();
+  const { addItem, setCartOpen } = useCart();
 
   return (
     <motion.div
@@ -30,8 +29,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
       </div>
 
-      {/* Wishlist Button */}
-      <button className="absolute top-3 right-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full text-gray-400 hover:text-red-500 hover:bg-white transition-colors shadow-sm opacity-0 group-hover:opacity-100">
+      {/* Wishlist Button — always visible */}
+      <button className="absolute top-3 right-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full text-gray-400 hover:text-red-500 hover:bg-white transition-colors shadow-sm">
         <Heart size={16} />
       </button>
 
@@ -44,13 +43,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           loading="lazy"
           referrerPolicy="no-referrer"
         />
-
-        {/* Quick Add Overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/60 to-transparent">
-          <Button size="sm" className="w-full bg-white text-gray-900 hover:bg-gray-100 border-0 shadow-lg" onClick={() => addItem(product)}>
-            <ShoppingCart size={14} className="mr-2" /> Quick Add
-          </Button>
-        </div>
       </div>
 
       {/* Content */}
@@ -83,6 +75,26 @@ export default function ProductCard({ product }: ProductCardProps) {
             <Zap size={12} className="fill-current" />
             <span>Instant</span>
           </div>
+        </div>
+
+        {/* Always-visible action buttons */}
+        <div className="flex flex-col gap-2 mt-4 w-full">
+          <button
+            onClick={() => addItem(product)}
+            className="bg-gray-100 text-black py-2 rounded-lg font-medium hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
+          >
+            <ShoppingCart size={18} /> Add to Cart
+          </button>
+
+          <button
+            onClick={() => {
+              addItem(product);
+              setCartOpen(true);
+            }}
+            className="bg-red-600 text-white py-2 rounded-lg font-bold hover:bg-red-700 transition-all"
+          >
+            Buy Now
+          </button>
         </div>
       </div>
     </motion.div>
