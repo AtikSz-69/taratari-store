@@ -10,6 +10,7 @@ import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
 import Newsletter from '@/components/Newsletter';
 import CheckoutDrawer from '@/components/CheckoutDrawer';
+import AdminProductForm from '@/components/AdminProductForm';
 import { CartProvider } from '@/context/CartContext';
 import { PRODUCTS, CATEGORIES } from '@/data/mockData';
 import { ArrowRight } from 'lucide-react';
@@ -25,6 +26,7 @@ export default function App() {
       <div className="min-h-screen bg-white font-sans text-gray-900 flex flex-col">
         <Header />
         <CheckoutDrawer />
+        <AdminProductForm />
 
         <main className="flex-1">
           <Hero />
