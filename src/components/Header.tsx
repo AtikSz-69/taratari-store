@@ -1,14 +1,95 @@
-import { useState } from 'react';
-import { Search, ShoppingCart, Menu, User, Bell, Zap, X } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Search, ShoppingCart, Menu, User, Bell, Zap, X, LogOut, ChevronDown } from 'lucide-react';
 import { Button } from './ui/Button';
 import { motion, AnimatePresence } from 'motion/react';
 import { CATEGORIES } from '@/data/mockData';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
+
+const GOOGLE_CLIENT_ID = '655077512151-ja821huu8qidamfcu0v1hnkkfhk6fhfu.apps.googleusercontent.com';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { totalItems, setCartOpen } = useCart();
+  const { user, signIn, signOut } = useAuth();
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+  const googleMobileBtnRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Initialize Google Sign-In
+  useEffect(() => {
+    if (user) return; // Don't render button if already signed in
+
+    const initGoogleSignIn = () => {
+      if (!window.google?.accounts?.id) return;
+
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response) => {
+          try {
+            await signIn(response.credential);
+          } catch (err) {
+            console.error('Sign-in failed:', err);
+          }
+        },
+        auto_select: false,
+        context: 'signin',
+      });
+
+      // Render desktop button
+      if (googleBtnRef.current) {
+        googleBtnRef.current.innerHTML = '';
+        window.google.accounts.id.renderButton(googleBtnRef.current, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'medium',
+          text: 'signin',
+          shape: 'rectangular',
+          logo_alignment: 'left',
+          width: 160,
+        });
+      }
+
+      // Render mobile button
+      if (googleMobileBtnRef.current) {
+        googleMobileBtnRef.current.innerHTML = '';
+        window.google.accounts.id.renderButton(googleMobileBtnRef.current, {
+          type: 'standard',
+          theme: 'filled_blue',
+          size: 'large',
+          text: 'signin_with',
+          shape: 'rectangular',
+          width: 280,
+        });
+      }
+    };
+
+    // Try immediately, or wait for script to load
+    if (window.google?.accounts?.id) {
+      initGoogleSignIn();
+    } else {
+      const interval = setInterval(() => {
+        if (window.google?.accounts?.id) {
+          initGoogleSignIn();
+          clearInterval(interval);
+        }
+      }, 200);
+      return () => clearInterval(interval);
+    }
+  }, [user, signIn, isMenuOpen]);
+
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
@@ -54,10 +135,67 @@ export default function Header() {
               <Bell size={20} />
             </Button>
 
-            <Button variant="ghost" className="hidden sm:flex items-center gap-2 text-gray-700 font-medium">
-              <User size={20} />
-              <span>Sign In</span>
-            </Button>
+            {/* Auth: Google Sign-In or User Profile */}
+            {user ? (
+              <div className="relative hidden sm:block" ref={profileRef}>
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <img
+                    src={user.picture}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full border-2 border-gray-100"
+                    referrerPolicy="no-referrer"
+                  />
+                  <span className="text-sm font-medium text-gray-700 max-w-[100px] truncate">
+                    {user.firstName}
+                  </span>
+                  <ChevronDown size={14} className={`text-gray-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Profile Dropdown */}
+                <AnimatePresence>
+                  {isProfileOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50"
+                    >
+                      <div className="p-4 bg-gray-50 border-b border-gray-100">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={user.picture}
+                            alt={user.name}
+                            className="w-10 h-10 rounded-full"
+                            referrerPolicy="no-referrer"
+                          />
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                            <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <button
+                          onClick={() => { signOut(); setIsProfileOpen(false); }}
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-red-50 transition-colors font-medium"
+                        >
+                          <LogOut size={16} />
+                          Sign Out
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="hidden sm:block" ref={googleBtnRef}>
+                {/* Google Sign-In button renders here */}
+              </div>
+            )}
 
             <div className="relative">
               <Button variant="outline" size="icon" className="text-gray-700 border-gray-200" onClick={() => setCartOpen(true)}>
@@ -134,9 +272,31 @@ export default function Header() {
               </div>
 
               <div className="p-4 flex flex-col gap-4 overflow-y-auto flex-1">
-                <Button className="w-full justify-start gap-2" variant="primary">
-                  <User size={18} /> Sign In / Register
-                </Button>
+                {/* Mobile Auth */}
+                {user ? (
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                    <img
+                      src={user.picture}
+                      alt={user.name}
+                      className="w-10 h-10 rounded-full"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => { signOut(); setIsMenuOpen(false); }}
+                      className="p-2 rounded-lg text-red-500 hover:bg-red-50"
+                    >
+                      <LogOut size={18} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex justify-center" ref={googleMobileBtnRef}>
+                    {/* Google Sign-In button renders here for mobile */}
+                  </div>
+                )}
 
                 <div className="space-y-1">
                   <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Categories</h3>
@@ -158,3 +318,4 @@ export default function Header() {
     </header>
   );
 }
+

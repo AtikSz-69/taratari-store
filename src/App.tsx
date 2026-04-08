@@ -12,6 +12,7 @@ import Newsletter from '@/components/Newsletter';
 import CheckoutDrawer from '@/components/CheckoutDrawer';
 import AdminProductForm from '@/components/AdminProductForm';
 import { CartProvider } from '@/context/CartContext';
+import { AuthProvider } from '@/context/AuthContext';
 import { PRODUCTS, CATEGORIES } from '@/data/mockData';
 import { ArrowRight } from 'lucide-react';
 import * as Icons from 'lucide-react';
@@ -22,6 +23,7 @@ export default function App() {
   const premiumSubs = PRODUCTS.filter(p => p.category === 'subscriptions' || p.category === 'vpn');
 
   return (
+    <AuthProvider>
     <CartProvider>
       <div className="min-h-screen bg-white font-sans text-gray-900 flex flex-col">
         <Header />
@@ -120,6 +122,7 @@ export default function App() {
         <Footer />
       </div>
     </CartProvider>
+    </AuthProvider>
   );
 }
 
