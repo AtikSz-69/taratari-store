@@ -29,21 +29,38 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    const prompt = `You are a professional e-commerce copywriter for a Bangladeshi digital products store called "Taratari". Write a compelling, concise product description (2-3 sentences max) for the following product:
+    // Premium brand system instruction for Gemma
+    const systemInstruction = `You are the Lead Brand Copywriter for "Taratari-store," a high-end e-commerce platform in Bangladesh known for speed and quality.
+
+Your goal is to transform basic product features into "Premium, Must-Have" descriptions.
+
+## Tone & Style Guidelines:
+- Tone: Sophisticated, modern, and highly persuasive.
+- Language: Primary English, but use culturally relevant context (e.g., mention reliability for Dhaka/Chittagong deliveries or suitability for the local climate/lifestyle).
+- Structure: Start with a "Hook" (a bold claim), follow with 3 bulleted "Key Benefits" (not just features), and end with a "Trust Factor" (mentioning Taratari's fast service).
+
+## Formatting Rules:
+- Use bolding for emphasis.
+- Keep the total length under 150 words.
+- Avoid generic phrases like "best product"; instead, use "uncompromising quality" or "precision-engineered."
+
+## Output Example:
+[Hook] Elevate your daily routine with the [Product Name]—where luxury meets peak performance.
+[Benefits]
+* Benefit 1: Detail why this matters for a premium lifestyle.
+* Benefit 2: Highlight the durability or unique design.
+* Benefit 3: Focus on the user experience.
+[Trust] Order now for lightning-fast delivery across Bangladesh, exclusively at Taratari.`;
+
+    // User prompt with product details
+    const userPrompt = `Write a premium product description for:
 
 Product Name: ${body.name}
 ${body.features ? `Key Features: ${body.features}` : ''}
 ${body.category ? `Category: ${body.category}` : ''}
 
-Requirements:
-- Write in English
-- Focus on value and benefits for Bangladeshi customers
-- Mention instant digital delivery
-- Keep it under 150 words
-- Make it sound premium and trustworthy
-- Do NOT include the product name in the description
-
-Return ONLY the description text, no quotes or formatting.`;
+Follow the structure exactly: Hook → 3 Bulleted Benefits → Trust Factor.
+Return ONLY the formatted description, nothing else.`;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=${apiKey}`,
@@ -51,10 +68,13 @@ Return ONLY the description text, no quotes or formatting.`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
+          system_instruction: {
+            parts: [{ text: systemInstruction }],
+          },
+          contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 200,
+            maxOutputTokens: 300,
             topP: 0.9,
           },
         }),
