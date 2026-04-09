@@ -9,7 +9,37 @@ interface GenerateRequest {
   category?: string;
 }
 
-// POST /api/gemma-proxy — Proxy to Google AI Studio (Gemma 4) for product descriptions
+// Exponential backoff helper — retries on 429 Rate Limit errors
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit,
+  maxRetries = 3,
+  baseDelay = 2000
+): Promise<Response> {
+  let lastResponse: Response | null = null;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const response = await fetch(url, options);
+
+    // If not a rate limit error, return immediately
+    if (response.status !== 429) {
+      return response;
+    }
+
+    lastResponse = response;
+
+    // Don't wait after the last attempt
+    if (attempt < maxRetries) {
+      const delay = baseDelay * Math.pow(2, attempt); // 2s → 4s → 8s
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+
+  // All retries exhausted — return the last 429 response
+  return lastResponse!;
+}
+
+// POST /api/gemma-proxy — Proxy to Google AI Studio (Gemini Flash) for product descriptions
 export const onRequestPost: PagesFunction<Env> = async (context) => {
   try {
     const apiKey = context.env.GEMMA_API_KEY;
@@ -29,7 +59,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    // Premium brand system instruction for Gemma
+    // Premium brand system instruction
     const systemInstruction = `You are the Lead Brand Copywriter for "Taratari-store," a high-end e-commerce platform in Bangladesh known for speed and quality.
 
 Your goal is to transform basic product features into "Premium, Must-Have" descriptions.
@@ -62,29 +92,33 @@ ${body.category ? `Category: ${body.category}` : ''}
 Follow the structure exactly: Hook → 3 Bulleted Benefits → Trust Factor.
 Return ONLY the formatted description, nothing else.`;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: systemInstruction }],
-          },
-          contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 300,
-            topP: 0.9,
-          },
-        }),
-      }
-    );
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${apiKey}`;
+    const requestBody = JSON.stringify({
+      system_instruction: {
+        parts: [{ text: systemInstruction }],
+      },
+      contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 300,
+        topP: 0.9,
+      },
+    });
+
+    // Fetch with automatic retry on 429 (up to 3 retries with exponential backoff)
+    const response = await fetchWithRetry(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: requestBody,
+    });
 
     if (!response.ok) {
       const errText = await response.text();
+      const errorMsg = response.status === 429
+        ? 'Rate limit exceeded. Please wait a moment and try again.'
+        : `AI API error: ${response.status}`;
       return new Response(
-        JSON.stringify({ success: false, error: `AI API error: ${response.status}`, details: errText }),
+        JSON.stringify({ success: false, error: errorMsg, details: errText }),
         { status: 502, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -110,3 +144,4 @@ Return ONLY the formatted description, nothing else.`;
     );
   }
 };
+
