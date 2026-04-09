@@ -184,6 +184,13 @@ export default function CheckoutDrawer() {
                                         >
                                             Proceed to Checkout
                                         </Button>
+                                        <Button
+                                            variant="danger"
+                                            className="w-full"
+                                            onClick={clearCart}
+                                        >
+                                            Clear All Items
+                                        </Button>
                                     </div>
                                 )}
                             </>
