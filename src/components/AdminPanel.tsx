@@ -156,6 +156,12 @@ export default function AdminPanel() {
       if (data.success) {
         setResult({ type: 'success', message: `Product added! ID: #${data.productId}` });
         setForm({ name: '', description: '', price: '', image_url: '', category: 'general', features: '' });
+        // Auto-refresh products list and switch to Products tab after 1.5s
+        setTimeout(() => {
+          fetchProducts();
+          setTab('products');
+          setResult(null);
+        }, 1500);
       } else {
         setResult({ type: 'error', message: data.error || 'Failed' });
       }
