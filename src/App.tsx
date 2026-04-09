@@ -10,7 +10,7 @@ import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
 import Newsletter from '@/components/Newsletter';
 import CheckoutDrawer from '@/components/CheckoutDrawer';
-import AdminProductForm from '@/components/AdminProductForm';
+import AdminPanel from '@/components/AdminPanel';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { PRODUCTS, CATEGORIES } from '@/data/mockData';
@@ -28,7 +28,7 @@ export default function App() {
       <div className="min-h-screen bg-white font-sans text-gray-900 flex flex-col">
         <Header />
         <CheckoutDrawer />
-        <AdminProductForm />
+        <AdminPanel />
 
         <main className="flex-1">
           <Hero />
