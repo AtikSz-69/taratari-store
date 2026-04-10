@@ -1,8 +1,10 @@
 import { ReactNode } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface SectionProps {
   title: string;
+  subtitle?: string;
   children: ReactNode;
   action?: {
     label: string;
@@ -11,27 +13,37 @@ interface SectionProps {
   className?: string;
 }
 
-export default function Section({ title, children, action, className = "" }: SectionProps) {
+export default function Section({ title, subtitle, children, action, className = "" }: SectionProps) {
   return (
-    <section className={`py-12 ${className}`}>
+    <section className={`py-14 ${className}`}>
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 relative pl-4">
-            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-red-600 rounded-full"></span>
-            {title}
-          </h2>
-          
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.4 }}
+          className="flex items-end justify-between mb-8"
+        >
+          <div>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">
+              {title}
+            </h2>
+            {subtitle && (
+              <p className="text-sm text-gray-500 mt-1 font-medium">{subtitle}</p>
+            )}
+          </div>
+
           {action && (
-            <a 
-              href={action.href} 
-              className="group flex items-center gap-1 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors"
+            <a
+              href={action.href}
+              className="group flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors whitespace-nowrap"
             >
               {action.label}
-              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+              <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
             </a>
           )}
-        </div>
-        
+        </motion.div>
+
         {children}
       </div>
     </section>

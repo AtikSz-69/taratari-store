@@ -14,18 +14,27 @@ import AdminPanel from '@/components/AdminPanel';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { PRODUCTS, CATEGORIES } from '@/data/mockData';
-import { ArrowRight } from 'lucide-react';
 import * as Icons from 'lucide-react';
+import { motion } from 'motion/react';
 
 export default function App() {
   const bestSellers = PRODUCTS.filter(p => p.isBestSeller);
   const newArrivals = PRODUCTS.filter(p => p.isNew || p.category === 'ai-tools');
   const premiumSubs = PRODUCTS.filter(p => p.category === 'subscriptions' || p.category === 'vpn');
 
+  const platformLogos: Record<string, string> = {
+    Netflix: '🎬',
+    Adobe: '🎨',
+    Microsoft: '💻',
+    Spotify: '🎵',
+    Canva: '✏️',
+    NordVPN: '🔒',
+  };
+
   return (
     <AuthProvider>
     <CartProvider>
-      <div className="min-h-screen bg-white font-sans text-gray-900 flex flex-col">
+      <div className="min-h-screen bg-gray-50 font-sans text-gray-900 flex flex-col">
         <Header />
         <CheckoutDrawer />
         <AdminPanel />
@@ -34,24 +43,36 @@ export default function App() {
           <Hero />
 
           {/* Categories Grid */}
-          <section className="py-12 bg-white">
+          <section className="py-14 bg-white">
             <div className="container mx-auto px-4">
-              <h2 className="text-2xl font-bold mb-8 text-center">Browse Digital Services</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-                {CATEGORIES.map((cat) => {
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mb-10"
+              >
+                <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Browse Digital Services</h2>
+                <p className="text-sm text-gray-500 mt-1.5 font-medium">Find exactly what you need</p>
+              </motion.div>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+                {CATEGORIES.map((cat, i) => {
                   const IconComponent = (Icons as any)[cat.icon] || Icons.Zap;
 
                   return (
-                    <a
+                    <motion.a
                       key={cat.id}
                       href="#"
-                      className="group flex flex-col items-center gap-3 p-4 rounded-xl border border-gray-100 hover:border-red-100 hover:bg-red-50 transition-all duration-300 text-center"
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.05 }}
+                      className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-gray-100 hover:border-red-200 hover:bg-red-50/50 transition-all duration-300 text-center"
                     >
-                      <div className="w-12 h-12 rounded-full bg-gray-100 group-hover:bg-white group-hover:text-red-600 flex items-center justify-center transition-colors text-gray-600">
-                        <IconComponent size={24} />
+                      <div className="w-12 h-12 rounded-xl bg-gray-50 group-hover:bg-white group-hover:text-red-600 group-hover:shadow-md group-hover:shadow-red-100 flex items-center justify-center transition-all duration-300 text-gray-500">
+                        <IconComponent size={22} />
                       </div>
-                      <span className="text-sm font-medium text-gray-700 group-hover:text-red-700">{cat.name}</span>
-                    </a>
+                      <span className="text-xs font-semibold text-gray-600 group-hover:text-red-700 transition-colors">{cat.name}</span>
+                    </motion.a>
                   );
                 })}
               </div>
@@ -60,11 +81,12 @@ export default function App() {
 
           {/* Best Sellers */}
           <Section
-            title="Trending Subscriptions"
+            title="🔥 Trending Now"
+            subtitle="Most popular subscriptions this week"
             action={{ label: "View All", href: "#" }}
             className="bg-gray-50"
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
               {bestSellers.concat(bestSellers).slice(0, 5).map((product, idx) => (
                 <ProductCard key={`${product.id}-${idx}`} product={product} />
               ))}
@@ -73,10 +95,12 @@ export default function App() {
 
           {/* New Arrivals */}
           <Section
-            title="New AI Tools & Software"
+            title="✨ New AI Tools & Software"
+            subtitle="Fresh drops you don't want to miss"
             action={{ label: "View All", href: "#" }}
+            className="bg-white"
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
               {newArrivals.concat(newArrivals).slice(0, 5).map((product, idx) => (
                 <ProductCard key={`${product.id}-${idx}`} product={product} />
               ))}
@@ -84,21 +108,33 @@ export default function App() {
           </Section>
 
           {/* Trusted Platforms */}
-          <section className="py-12 bg-gray-50">
+          <section className="py-14 bg-gray-50">
             <div className="container mx-auto px-4">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">Trusted Platforms</h2>
-                <a href="#" className="text-red-600 font-semibold text-sm flex items-center gap-1">View All <ArrowRight size={16} /></a>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-center mb-10"
+              >
+                <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Trusted Platforms</h2>
+                <p className="text-sm text-gray-500 mt-1.5 font-medium">We partner with the world's best</p>
+              </motion.div>
 
-              <div className="flex gap-8 overflow-x-auto pb-4 scrollbar-hide">
-                {['Netflix', 'Adobe', 'Microsoft', 'Spotify', 'Canva', 'NordVPN'].map((name, i) => (
-                  <div key={i} className="flex flex-col items-center gap-3 min-w-[100px] group cursor-pointer">
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-red-600 transition-all bg-white flex items-center justify-center shadow-sm">
-                      <span className="font-bold text-gray-400 group-hover:text-red-600">{name.charAt(0)}</span>
+              <div className="flex justify-center gap-6 md:gap-10 flex-wrap">
+                {Object.entries(platformLogos).map(([name, emoji], i) => (
+                  <motion.div
+                    key={name}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.06 }}
+                    className="flex flex-col items-center gap-3 group cursor-pointer"
+                  >
+                    <div className="w-20 h-20 rounded-2xl bg-white border-2 border-gray-100 group-hover:border-red-200 group-hover:shadow-lg group-hover:shadow-red-100/40 flex items-center justify-center transition-all duration-300">
+                      <span className="text-3xl group-hover:scale-110 transition-transform duration-200">{emoji}</span>
                     </div>
-                    <span className="text-sm font-medium text-gray-800 group-hover:text-red-600 text-center">{name}</span>
-                  </div>
+                    <span className="text-sm font-semibold text-gray-700 group-hover:text-red-600 transition-colors">{name}</span>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -106,10 +142,12 @@ export default function App() {
 
           {/* Premium Subs */}
           <Section
-            title="Premium Memberships"
+            title="👑 Premium Memberships"
+            subtitle="Unlock unlimited access"
             action={{ label: "View All", href: "#" }}
+            className="bg-white"
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
               {premiumSubs.concat(premiumSubs).slice(0, 5).map((product, idx) => (
                 <ProductCard key={`${product.id}-${idx}`} product={product} />
               ))}
@@ -125,4 +163,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-
