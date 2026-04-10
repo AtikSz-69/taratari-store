@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Plus, Minus, ShoppingBag, Trash2, CheckCircle, Loader2, Phone, MapPin, User } from 'lucide-react';
+import { X, Plus, Minus, ShoppingBag, Trash2, CheckCircle, Loader2, Phone, MapPin, User, Mail, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button } from './ui/Button';
 import { useCart } from '@/context/CartContext';
@@ -11,7 +11,7 @@ export default function CheckoutDrawer() {
     const { items, removeItem, updateQuantity, totalPrice, totalItems, isCartOpen, setCartOpen, clearCart } = useCart();
     const { user } = useAuth();
     const [view, setView] = useState<View>('cart');
-    const [form, setForm] = useState({ name: '', phone: '', address: '' });
+    const [form, setForm] = useState({ name: '', email: user?.email || '', phone: '', address: '', additionalText: '' });
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [submitting, setSubmitting] = useState(false);
     const [apiError, setApiError] = useState('');
@@ -19,7 +19,7 @@ export default function CheckoutDrawer() {
 
     function resetAndClose() {
         setView('cart');
-        setForm({ name: '', phone: '', address: '' });
+        setForm({ name: '', email: user?.email || '', phone: '', address: '', additionalText: '' });
         setErrors({});
         setApiError('');
         setCartOpen(false);
@@ -34,7 +34,7 @@ export default function CheckoutDrawer() {
             if (!/^(\+?880|0)?1[3-9]\d{8}$/.test(phoneClean)) e.phone = 'Enter a valid Bangladeshi number';
         }
         if (!form.address.trim()) e.address = 'Delivery address is required';
-        else if (form.address.trim().length < 10) e.address = 'Please enter a more detailed address';
+        if (!form.email.trim() && !user?.email) e.email = 'Email address is required';
         setErrors(e);
         return Object.keys(e).length === 0;
     }
@@ -51,8 +51,8 @@ export default function CheckoutDrawer() {
                 body: JSON.stringify({
                     customer_name: form.name.trim(),
                     customer_phone: form.phone.trim(),
-                    customer_address: form.address.trim(),
-                    customer_email: user?.email || '',
+                    customer_address: form.additionalText.trim() ? `${form.address.trim()} || Notes: ${form.additionalText.trim()}` : form.address.trim(),
+                    customer_email: form.email.trim() || user?.email || '',
                     items_json: JSON.stringify(items.map((item) => ({
                         id: Number(item.id),
                         name: item.title,
@@ -236,6 +236,20 @@ export default function CheckoutDrawer() {
 
                                         <div>
                                             <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
+                                                <Mail size={14} /> Email Address
+                                            </label>
+                                            <input
+                                                type="email"
+                                                value={form.email}
+                                                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                                                placeholder="your.email@example.com"
+                                                className={`w-full px-3 py-2.5 rounded-lg border ${errors.email ? 'border-red-400' : 'border-gray-200'} focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 text-sm`}
+                                            />
+                                            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                                        </div>
+
+                                        <div>
+                                            <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
                                                 <Phone size={14} /> Phone Number
                                             </label>
                                             <input
@@ -260,6 +274,19 @@ export default function CheckoutDrawer() {
                                                 className={`w-full px-3 py-2.5 rounded-lg border ${errors.address ? 'border-red-400' : 'border-gray-200'} focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 text-sm resize-none`}
                                             />
                                             {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
+                                        </div>
+
+                                        <div>
+                                            <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
+                                                <FileText size={14} /> Additional Text / Notes (Optional)
+                                            </label>
+                                            <textarea
+                                                value={form.additionalText}
+                                                onChange={(e) => setForm({ ...form, additionalText: e.target.value })}
+                                                placeholder="Any special instructions or details..."
+                                                rows={2}
+                                                className={`w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 text-sm resize-none`}
+                                            />
                                         </div>
                                     </div>
 
