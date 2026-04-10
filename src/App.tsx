@@ -10,7 +10,6 @@ import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
 import Newsletter from '@/components/Newsletter';
 import CheckoutDrawer from '@/components/CheckoutDrawer';
-import AdminPanel from '@/components/AdminPanel';
 import BentoGrid from '@/components/BentoGrid';
 import StatsBar from '@/components/StatsBar';
 import UserDashboard from '@/components/UserDashboard';
@@ -40,7 +39,6 @@ export default function App() {
       <div className="min-h-screen bg-gray-50 font-sans text-gray-900 flex flex-col">
         <Header />
         <CheckoutDrawer />
-        <AdminPanel />
         <UserDashboard />
 
         <main className="flex-1">
@@ -88,13 +86,13 @@ export default function App() {
 
           {/* Best Sellers */}
           <Section
-            title="🔥 Trending Now"
-            subtitle="Most popular subscriptions this week"
-            action={{ label: "View All", href: "#" }}
+            title="💎 Featured Product"
+            subtitle="Premium access, instant delivery"
+            action={{ label: "Buy Now", href: "#" }}
             className="bg-gray-50"
           >
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-              {bestSellers.concat(bestSellers).slice(0, 5).map((product, idx) => (
+              {bestSellers.map((product, idx) => (
                 <ProductCard key={`${product.id}-${idx}`} product={product} />
               ))}
             </div>
@@ -102,20 +100,6 @@ export default function App() {
 
           {/* Bento Grid — Why Taratari */}
           <BentoGrid />
-
-          {/* New Arrivals */}
-          <Section
-            title="✨ New AI Tools & Software"
-            subtitle="Fresh drops you don't want to miss"
-            action={{ label: "View All", href: "#" }}
-            className="bg-white"
-          >
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-              {newArrivals.concat(newArrivals).slice(0, 5).map((product, idx) => (
-                <ProductCard key={`${product.id}-${idx}`} product={product} />
-              ))}
-            </div>
-          </Section>
 
           {/* Trusted Platforms */}
           <section className="py-14 bg-gray-50">
@@ -149,20 +133,6 @@ export default function App() {
               </div>
             </div>
           </section>
-
-          {/* Premium Subs */}
-          <Section
-            title="👑 Premium Memberships"
-            subtitle="Unlock unlimited access"
-            action={{ label: "View All", href: "#" }}
-            className="bg-white"
-          >
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-              {premiumSubs.concat(premiumSubs).slice(0, 5).map((product, idx) => (
-                <ProductCard key={`${product.id}-${idx}`} product={product} />
-              ))}
-            </div>
-          </Section>
 
           <Newsletter />
         </main>
