@@ -11,6 +11,8 @@ import Footer from '@/components/Footer';
 import Newsletter from '@/components/Newsletter';
 import CheckoutDrawer from '@/components/CheckoutDrawer';
 import AdminPanel from '@/components/AdminPanel';
+import BentoGrid from '@/components/BentoGrid';
+import StatsBar from '@/components/StatsBar';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { PRODUCTS, CATEGORIES } from '@/data/mockData';
@@ -41,6 +43,9 @@ export default function App() {
 
         <main className="flex-1">
           <Hero />
+
+          {/* Animated Stats */}
+          <StatsBar />
 
           {/* Categories Grid */}
           <section className="py-14 bg-white">
@@ -92,6 +97,9 @@ export default function App() {
               ))}
             </div>
           </Section>
+
+          {/* Bento Grid — Why Taratari */}
+          <BentoGrid />
 
           {/* New Arrivals */}
           <Section

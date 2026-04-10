@@ -54,7 +54,7 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
-              <Button size="lg" className="gap-2 shadow-lg shadow-red-600/25 bg-red-600 hover:bg-red-500 text-white px-8 pulse-glow border-0">
+              <Button variant="gradient" size="lg" className="gap-2 px-8 border-0">
                 Browse Shop <ArrowRight size={18} />
               </Button>
               <Button variant="outline" size="lg" className="bg-white/5 border-white/15 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm">
