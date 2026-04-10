@@ -13,6 +13,7 @@ import CheckoutDrawer from '@/components/CheckoutDrawer';
 import AdminPanel from '@/components/AdminPanel';
 import BentoGrid from '@/components/BentoGrid';
 import StatsBar from '@/components/StatsBar';
+import UserDashboard from '@/components/UserDashboard';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { PRODUCTS, CATEGORIES } from '@/data/mockData';
@@ -40,6 +41,7 @@ export default function App() {
         <Header />
         <CheckoutDrawer />
         <AdminPanel />
+        <UserDashboard />
 
         <main className="flex-1">
           <Hero />

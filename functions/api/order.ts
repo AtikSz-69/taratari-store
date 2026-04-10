@@ -7,6 +7,7 @@ interface OrderRequest {
     customer_name: string;
     customer_phone: string;
     customer_address: string;
+    customer_email?: string;
     items_json: string;
     total_amount: number;
 }
@@ -34,8 +35,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         }
 
         const result = await context.env.DB.prepare(
-            'INSERT INTO orders (customer_name, customer_phone, customer_address, items_json, total_amount) VALUES (?, ?, ?, ?, ?)'
-        ).bind(body.customer_name, body.customer_phone, body.customer_address, body.items_json, body.total_amount).run();
+            'INSERT INTO orders (customer_name, customer_phone, customer_address, customer_email, items_json, total_amount) VALUES (?, ?, ?, ?, ?, ?)'
+        ).bind(body.customer_name, body.customer_phone, body.customer_address, body.customer_email || '', body.items_json, body.total_amount).run();
 
         return new Response(
             JSON.stringify({

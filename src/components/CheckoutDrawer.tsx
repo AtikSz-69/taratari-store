@@ -3,11 +3,13 @@ import { X, Plus, Minus, ShoppingBag, Trash2, CheckCircle, Loader2, Phone, MapPi
 import { motion, AnimatePresence } from 'motion/react';
 import { Button } from './ui/Button';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 
 type View = 'cart' | 'checkout' | 'success';
 
 export default function CheckoutDrawer() {
     const { items, removeItem, updateQuantity, totalPrice, totalItems, isCartOpen, setCartOpen, clearCart } = useCart();
+    const { user } = useAuth();
     const [view, setView] = useState<View>('cart');
     const [form, setForm] = useState({ name: '', phone: '', address: '' });
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -50,6 +52,7 @@ export default function CheckoutDrawer() {
                     customer_name: form.name.trim(),
                     customer_phone: form.phone.trim(),
                     customer_address: form.address.trim(),
+                    customer_email: user?.email || '',
                     items_json: JSON.stringify(items.map((item) => ({
                         id: Number(item.id),
                         name: item.title,
