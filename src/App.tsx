@@ -31,10 +31,12 @@ export default function App() {
       .catch(() => {});
   }, []);
 
-  const filteredProducts = liveProducts.filter((p: any) => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    p.category?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = liveProducts.filter((p: any) => {
+    const pName = p.name || p.title || '';
+    const pCat = p.category || '';
+    return pName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+           pCat.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   const bestSellers = filteredProducts.filter((p: any) => p.isBestSeller !== false);
 

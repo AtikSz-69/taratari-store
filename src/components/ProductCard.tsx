@@ -14,10 +14,13 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [isWished, setIsWished] = useState(false);
 
   function handleAddToCart() {
-    addItem(product);
+    addItem({ ...product, title: product.title || product.name, image: product.image || product.image_url });
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1200);
   }
+
+  const title = product.title || product.name;
+  const imageUrl = product.image || product.image_url;
 
   return (
     <motion.div
@@ -54,8 +57,8 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Image Container */}
       <div className="relative aspect-video overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100">
         <img
-          src={product.image}
-          alt={product.title}
+          src={imageUrl}
+          alt={title}
           className="w-full h-full object-cover card-image-zoom"
           loading="lazy"
           referrerPolicy="no-referrer"
@@ -77,8 +80,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <h3 className="font-bold text-gray-900 line-clamp-2 mb-3 text-sm leading-snug group-hover:text-red-600 transition-colors duration-200" title={product.title}>
-          {product.title}
+        <h3 className="font-bold text-gray-900 line-clamp-2 mb-3 text-sm leading-snug group-hover:text-red-600 transition-colors duration-200" title={title}>
+          {title}
         </h3>
 
         {/* Price Block */}
