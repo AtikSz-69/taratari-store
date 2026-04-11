@@ -8,7 +8,7 @@ import { Button } from './ui/Button';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/context/AuthContext';
 
-type Tab = 'orders' | 'products' | 'add';
+type Tab = 'orders' | 'products' | 'add' | 'subscribers';
 
 interface Order {
   id: number;
@@ -31,6 +31,12 @@ interface AdminProduct {
   created_at: string;
 }
 
+interface Subscriber {
+  id: number;
+  email: string;
+  created_at: string;
+}
+
 export default function AdminPanel() {
   const [isOpen, setIsOpen] = useState(false);
   const [adminKey, setAdminKey] = useState('');
@@ -43,6 +49,10 @@ export default function AdminPanel() {
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
   const [deletingOrderId, setDeletingOrderId] = useState<number | null>(null);
+
+  // Subscribers state
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [subscribersLoading, setSubscribersLoading] = useState(false);
 
   // Products state
   const [products, setProducts] = useState<AdminProduct[]>([]);
@@ -84,6 +94,19 @@ export default function AdminPanel() {
       if (data.success) setOrders(data.orders || []);
     } catch { /* ignore */ }
     setOrdersLoading(false);
+  }
+
+  // Fetch subscribers
+  async function fetchSubscribers() {
+    setSubscribersLoading(true);
+    try {
+      const res = await fetch('/api/admin/subscribers', {
+        headers: { 'x-admin-key': adminKey },
+      });
+      const data = await res.json();
+      if (data.success) setSubscribers(data.subscribers || []);
+    } catch { /* ignore */ }
+    setSubscribersLoading(false);
   }
 
   // Fetch products
@@ -222,6 +245,7 @@ export default function AdminPanel() {
     setIsAuthenticated(true);
     fetchOrders();
     fetchProducts();
+    fetchSubscribers();
   }
 
   // Load data when tab changes
@@ -229,6 +253,7 @@ export default function AdminPanel() {
     if (!isAuthenticated) return;
     if (tab === 'orders') fetchOrders();
     if (tab === 'products') fetchProducts();
+    if (tab === 'subscribers') fetchSubscribers();
   }, [tab, isAuthenticated]);
 
   function formatDate(d: string) {
@@ -248,6 +273,10 @@ export default function AdminPanel() {
   const filteredProducts = products.filter((p) =>
     p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.category?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredSubscribers = subscribers.filter((s) =>
+    s.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // IMPORTANT Admin Check Rule
@@ -337,6 +366,7 @@ export default function AdminPanel() {
                     {[
                       { id: 'orders' as Tab, label: 'Orders', icon: ShoppingBag, count: orders.length },
                       { id: 'products' as Tab, label: 'Products', icon: Package, count: products.length },
+                      { id: 'subscribers' as Tab, label: 'Customers', icon: User, count: subscribers.length },
                       { id: 'add' as Tab, label: editingProductId ? 'Edit Product' : 'Add Product', icon: Plus },
                     ].map((t) => (
                       <button
@@ -371,12 +401,16 @@ export default function AdminPanel() {
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder={tab === 'orders' ? 'Search by name, phone, or ID...' : 'Search by name or category...'}
+                            placeholder={tab === 'orders' ? 'Search by name, phone, or ID...' : tab === 'products' ? 'Search by name or category...' : 'Search emails...'}
                             className="flex-1 bg-transparent outline-none text-sm"
                           />
                         </div>
                         <button
-                          onClick={() => tab === 'orders' ? fetchOrders() : fetchProducts()}
+                          onClick={() => {
+                              if (tab === 'orders') fetchOrders();
+                              else if (tab === 'products') fetchProducts();
+                              else if (tab === 'subscribers') fetchSubscribers();
+                          }}
                           className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
                         >
                           <RefreshCw size={16} />
@@ -540,6 +574,45 @@ export default function AdminPanel() {
                                     {deletingId === product.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                                   </button>
                               </div>
+                            </motion.div>
+                          ))
+                        )}
+                      </div>
+                    )}
+
+                    {/* ============ SUBSCRIBERS TAB ============ */}
+                    {tab === 'subscribers' && (
+                      <div className="p-6 space-y-3">
+                        {subscribersLoading ? (
+                          <div className="flex items-center justify-center py-16">
+                            <Loader2 size={24} className="animate-spin text-gray-400" />
+                          </div>
+                        ) : filteredSubscribers.length === 0 ? (
+                          <div className="text-center py-16 text-gray-400">
+                            <User size={40} className="mx-auto mb-3 opacity-50" />
+                            <p className="font-medium">No loyal customers yet</p>
+                          </div>
+                        ) : (
+                          filteredSubscribers.map((sub) => (
+                            <motion.div
+                              key={sub.id}
+                              layout
+                              className="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between"
+                            >
+                              <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+                                      <User size={18} className="text-blue-600" />
+                                  </div>
+                                  <div>
+                                      <p className="text-sm font-semibold text-gray-900">{sub.email}</p>
+                                      <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+                                          <Clock size={10} /> Joined: {formatDate(sub.created_at)}
+                                      </p>
+                                  </div>
+                              </div>
+                              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-blue-100 text-blue-700">
+                                  Subscriber
+                              </span>
                             </motion.div>
                           ))
                         )}

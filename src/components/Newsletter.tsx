@@ -1,8 +1,38 @@
+import { useState } from 'react';
 import { Button } from './ui/Button';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function Newsletter() {
+  const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  async function handleSubscribe(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim() || !email.includes('@')) return;
+    
+    setSubmitting(true);
+    setResult(null);
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setResult({ type: 'success', message: data.message || 'Subscribed successfully!' });
+        setEmail('');
+      } else {
+        setResult({ type: 'error', message: data.error || 'Failed to subscribe' });
+      }
+    } catch {
+      setResult({ type: 'error', message: 'Network error. Please try again later.' });
+    }
+    setSubmitting(false);
+  }
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 py-20">
       {/* Ambient Background */}
@@ -31,17 +61,32 @@ export default function Newsletter() {
               Get exclusive deals, new product drops, and insider tips delivered weekly. No spam — we respect your inbox.
             </p>
 
-            <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 className="flex-1 px-5 py-3.5 rounded-xl bg-white/[0.07] border border-white/15 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all text-sm"
                 required
               />
-              <Button size="lg" className="bg-red-600 hover:bg-red-500 text-white border-0 px-6 gap-2 shadow-lg shadow-red-600/25">
-                Subscribe <ArrowRight size={16} />
+              <Button type="submit" size="lg" disabled={submitting} className="bg-red-600 hover:bg-red-500 text-white border-0 px-6 gap-2 shadow-lg shadow-red-600/25 disabled:opacity-75">
+                {submitting ? <Loader2 size={16} className="animate-spin" /> : <>Subscribe <ArrowRight size={16} /></>}
               </Button>
             </form>
+
+            {result && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`mt-4 px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center gap-2 ${
+                  result.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                }`}
+              >
+                {result.type === 'success' && <CheckCircle size={16} />}
+                {result.message}
+              </motion.div>
+            )}
 
             <p className="text-[11px] text-gray-600 mt-4">
               Join 5,000+ subscribers. Unsubscribe anytime.
