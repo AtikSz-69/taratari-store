@@ -128,7 +128,18 @@ export default function CheckoutDrawer() {
                                         <div className="flex flex-col items-center justify-center h-full text-center py-16">
                                             <ShoppingBag size={48} className="text-gray-300 mb-4" />
                                             <p className="text-gray-500 font-medium">Your cart is empty</p>
-                                            <p className="text-gray-400 text-sm mt-1">Add some products to get started!</p>
+                                            <p className="text-gray-400 text-sm mt-1 mb-6">Looking for your past purchases?</p>
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => {
+                                                    resetAndClose();
+                                                    window.dispatchEvent(new Event('open-dashboard'));
+                                                }}
+                                                className="gap-2"
+                                            >
+                                                <User size={16} />
+                                                View Order History
+                                            </Button>
                                         </div>
                                     ) : (
                                         <AnimatePresence>
