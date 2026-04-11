@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Plus, Minus, ShoppingBag, Trash2, CheckCircle, Loader2, Phone, MapPin, User, Mail, FileText } from 'lucide-react';
+import { X, Plus, Minus, ShoppingBag, Trash2, CheckCircle, Loader2, Phone, MapPin, User, Mail, FileText, Zap, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button } from './ui/Button';
 import { useCart } from '@/context/CartContext';
@@ -295,6 +295,29 @@ export default function CheckoutDrawer() {
                                             {apiError}
                                         </div>
                                     )}
+
+                                    {/* Satisfaction & Process Info Box */}
+                                    <div className="rounded-xl bg-blue-50/50 border border-blue-100 p-4 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl -translate-y-4" />
+                                        <h4 className="flex items-center gap-1.5 text-sm font-bold text-blue-900 mb-2.5">
+                                            <ShieldCheck size={16} className="text-blue-600" />
+                                            How Delivery Works
+                                        </h4>
+                                        <ul className="space-y-2 text-xs text-blue-800/80">
+                                            <li className="flex items-start gap-2">
+                                                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[9px] font-bold mt-0.5 shrink-0">1</span>
+                                                Submit your order details below.
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[9px] font-bold mt-0.5 shrink-0">2</span>
+                                                Our team will verify & create your premium account.
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-[9px] font-bold mt-0.5 shrink-0">3</span>
+                                                Receive credentials via WhatsApp or Email instantly.
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
 
                                 <div className="p-4 border-t border-gray-100 space-y-2">
