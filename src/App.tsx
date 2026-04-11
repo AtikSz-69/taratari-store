@@ -1,8 +1,4 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Section from '@/components/Section';
@@ -21,9 +17,26 @@ import * as Icons from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function App() {
-  const bestSellers = PRODUCTS.filter(p => p.isBestSeller);
-  const newArrivals = PRODUCTS.filter(p => p.isNew || p.category === 'ai-tools');
-  const premiumSubs = PRODUCTS.filter(p => p.category === 'subscriptions' || p.category === 'vpn');
+  const [liveProducts, setLiveProducts] = useState(PRODUCTS);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.products?.length > 0) {
+          setLiveProducts(data.products);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const filteredProducts = liveProducts.filter((p: any) => 
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    p.category?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const bestSellers = filteredProducts.filter((p: any) => p.isBestSeller !== false);
 
   const platformLogos: Record<string, string> = {
     Netflix: '🎬',
@@ -38,7 +51,7 @@ export default function App() {
     <AuthProvider>
     <CartProvider>
       <div className="min-h-screen bg-gray-50 font-sans text-gray-900 flex flex-col">
-        <Header />
+        <Header onSearchChange={setSearchQuery} />
         <CheckoutDrawer />
         <AdminPanel />
         <UserDashboard />
