@@ -30,3 +30,22 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     );
   }
 };
+
+// DELETE /api/admin/orders — Delete an order
+export const onRequestDelete: PagesFunction<Env> = async (context) => {
+  try {
+    const adminKey = context.request.headers.get('x-admin-key');
+    if (!adminKey || adminKey !== context.env.ADMIN_SECRET_KEY) {
+      return new Response(JSON.stringify({ success: false, error: 'Unauthorized' }), { status: 401 });
+    }
+
+    const { id } = await context.request.json() as { id: number };
+    if (!id) return new Response(JSON.stringify({ success: false, error: 'Missing ID' }), { status: 400 });
+
+    await context.env.DB.prepare('DELETE FROM orders WHERE id = ?').bind(id).run();
+
+    return new Response(JSON.stringify({ success: true }));
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, error: 'Failed to delete order' }), { status: 500 });
+  }
+};

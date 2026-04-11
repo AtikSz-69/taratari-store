@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/Button';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '@/context/AuthContext';
 
 type Tab = 'orders' | 'products' | 'add';
 
@@ -41,6 +42,7 @@ export default function AdminPanel() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
+  const [deletingOrderId, setDeletingOrderId] = useState<number | null>(null);
 
   // Products state
   const [products, setProducts] = useState<AdminProduct[]>([]);
@@ -51,10 +53,13 @@ export default function AdminPanel() {
   const [form, setForm] = useState({
     name: '', description: '', price: '', image_url: '', category: 'general', features: '',
   });
+  const [editingProductId, setEditingProductId] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [result, setResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const { user } = useAuth();
 
   const categories = [
     { value: 'general', label: 'General' },
@@ -111,6 +116,39 @@ export default function AdminPanel() {
     setDeletingId(null);
   }
 
+  // Delete order
+  async function deleteOrder(id: number) {
+    if (!confirm('Are you sure you want to permanently delete this order?')) return;
+    setDeletingOrderId(id);
+    try {
+      const res = await fetch('/api/admin/orders', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+        body: JSON.stringify({ id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOrders((prev) => prev.filter((o) => o.id !== id));
+        if (expandedOrder === id) setExpandedOrder(null);
+      }
+    } catch { /* ignore */ }
+    setDeletingOrderId(null);
+  }
+
+  function handleEditProduct(product: AdminProduct) {
+    setForm({
+      name: product.name || '',
+      description: product.description || '',
+      price: product.price ? String(product.price) : '',
+      image_url: product.image_url || '',
+      category: product.category || 'general',
+      features: ''
+    });
+    setEditingProductId(product.id);
+    setTab('add');
+    setResult(null);
+  }
+
   // Magic Generate
   async function handleMagicGenerate() {
     if (!form.name.trim()) return;
@@ -144,18 +182,25 @@ export default function AdminPanel() {
     setSubmitting(true);
     setResult(null);
     try {
-      const res = await fetch('/api/admin/add', {
-        method: 'POST',
+      const endpoint = editingProductId ? '/api/admin/products' : '/api/admin/add';
+      const method = editingProductId ? 'PUT' : 'POST';
+      
+      const payload: any = {
+        name: form.name.trim(), description: form.description.trim(),
+        price: Number(form.price), image_url: form.image_url.trim(), category: form.category,
+      };
+      if (editingProductId) payload.id = editingProductId;
+
+      const res = await fetch(endpoint, {
+        method,
         headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
-        body: JSON.stringify({
-          name: form.name.trim(), description: form.description.trim(),
-          price: Number(form.price), image_url: form.image_url.trim(), category: form.category,
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.success) {
-        setResult({ type: 'success', message: `Product added! ID: #${data.productId}` });
+        setResult({ type: 'success', message: editingProductId ? 'Product updated successfully!' : `Product added! ID: #${data.productId}` });
         setForm({ name: '', description: '', price: '', image_url: '', category: 'general', features: '' });
+        setEditingProductId(null);
         // Auto-refresh products list and switch to Products tab after 1.5s
         setTimeout(() => {
           fetchProducts();
@@ -204,6 +249,9 @@ export default function AdminPanel() {
     p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.category?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // IMPORTANT Admin Check Rule
+  if (user?.email !== 'iamatik69@gmail.com') return null;
 
   return (
     <>
@@ -289,7 +337,7 @@ export default function AdminPanel() {
                     {[
                       { id: 'orders' as Tab, label: 'Orders', icon: ShoppingBag, count: orders.length },
                       { id: 'products' as Tab, label: 'Products', icon: Package, count: products.length },
-                      { id: 'add' as Tab, label: 'Add Product', icon: Plus },
+                      { id: 'add' as Tab, label: editingProductId ? 'Edit Product' : 'Add Product', icon: Plus },
                     ].map((t) => (
                       <button
                         key={t.id}
@@ -401,15 +449,25 @@ export default function AdminPanel() {
                                       className="border-t border-gray-100"
                                     >
                                       <div className="p-4 space-y-3 bg-gray-50">
-                                        <div className="grid grid-cols-2 gap-3 text-sm">
-                                          <div className="flex items-center gap-2">
-                                            <Phone size={14} className="text-gray-400" />
-                                            <span className="text-gray-700">{order.customer_phone}</span>
-                                          </div>
-                                          <div className="flex items-start gap-2">
-                                            <MapPin size={14} className="text-gray-400 mt-0.5" />
-                                            <span className="text-gray-700">{order.customer_address}</span>
-                                          </div>
+                                        <div className="flex justify-between items-start">
+                                            <div className="grid grid-cols-2 gap-3 text-sm flex-1">
+                                              <div className="flex items-center gap-2">
+                                                <Phone size={14} className="text-gray-400" />
+                                                <span className="text-gray-700">{order.customer_phone}</span>
+                                              </div>
+                                              <div className="flex items-start gap-2">
+                                                <MapPin size={14} className="text-gray-400 mt-0.5" />
+                                                <span className="text-gray-700">{order.customer_address}</span>
+                                              </div>
+                                            </div>
+                                            <button 
+                                                onClick={(e) => { e.stopPropagation(); deleteOrder(order.id); }}
+                                                disabled={deletingOrderId === order.id}
+                                                className="ml-4 p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-50"
+                                                title="Delete Order"
+                                            >
+                                                {deletingOrderId === order.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                                            </button>
                                         </div>
                                         <div className="bg-white rounded-lg border border-gray-100 p-3">
                                           <p className="text-xs font-semibold text-gray-500 mb-2">Items</p>
@@ -467,13 +525,21 @@ export default function AdminPanel() {
                                   <p className="text-xs text-gray-400 mt-1 line-clamp-1">{product.description}</p>
                                 )}
                               </div>
-                              <button
-                                onClick={() => deleteProduct(product.id)}
-                                disabled={deletingId === product.id}
-                                className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
-                              >
-                                {deletingId === product.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
-                              </button>
+                              <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => handleEditProduct(product)}
+                                    className="p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                                  >
+                                    <Sparkles size={16} /> {/* Can use an Edit/Pen icon but Sparkles looks nice for edit too */}
+                                  </button>
+                                  <button
+                                    onClick={() => deleteProduct(product.id)}
+                                    disabled={deletingId === product.id}
+                                    className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+                                  >
+                                    {deletingId === product.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                                  </button>
+                              </div>
                             </motion.div>
                           ))
                         )}
@@ -600,8 +666,21 @@ export default function AdminPanel() {
                           isLoading={submitting}
                           onClick={handleAddProduct}
                         >
-                          <Plus size={16} className="mr-2" /> Add Product to Store
+                          {editingProductId ? <><Package size={16} className="mr-2" /> Update Product</> : <><Plus size={16} className="mr-2" /> Add Product to Store</>}
                         </Button>
+                        {editingProductId && (
+                            <Button
+                                variant="ghost"
+                                className="w-full mt-2"
+                                onClick={() => {
+                                    setForm({ name: '', description: '', price: '', image_url: '', category: 'general', features: '' });
+                                    setEditingProductId(null);
+                                    setTab('products');
+                                }}
+                            >
+                                Cancel Editing
+                            </Button>
+                        )}
                       </div>
                     )}
                   </div>
