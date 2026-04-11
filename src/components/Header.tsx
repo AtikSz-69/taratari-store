@@ -97,10 +97,6 @@ export default function Header({ onSearchChange }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
-      {/* Top Bar - Promotion */}
-      <div className="bg-red-50 text-red-600 text-xs py-1 text-center font-medium hidden sm:block">
-        🎉 Get 25% OFF on your first order! Use code: TARATARI25
-      </div>
 
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 gap-4">
@@ -115,7 +111,7 @@ export default function Header({ onSearchChange }: HeaderProps) {
           </div>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-2xl relative">
+          <div className="hidden md:flex flex-1 max-w-sm relative ml-4 lg:ml-8">
             <div className={`flex w-full items-center border-2 rounded-lg overflow-hidden transition-colors ${isSearchFocused ? 'border-red-600' : 'border-gray-200'}`}>
               <div className="pl-3 text-gray-400">
                 <Search size={20} />
