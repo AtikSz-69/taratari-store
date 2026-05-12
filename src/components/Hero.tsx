@@ -1,179 +1,118 @@
-import { Button } from './ui/Button';
-import { ArrowRight, Shield, Terminal, Bug, Network, Lock, Eye } from 'lucide-react';
+import { ArrowRight, ArrowDown } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 min-h-[90vh] flex items-center">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[120px]" />
-        <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] bg-blue-500/8 rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-900/5 rounded-full blur-[80px]" />
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-        {/* Animated scan line */}
-        <motion.div
-          animate={{ y: ['-100%', '200%'] }}
-          transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
-          className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"
-        />
-      </div>
-
-      <div className="container mx-auto px-4 py-14 md:py-20 lg:py-24 relative z-10">
+    <section className="relative bg-white overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 pt-12 pb-20 md:pt-20 md:pb-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
           {/* Text Content */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
-            className="space-y-7"
+            className="space-y-8 order-2 lg:order-1"
           >
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-cyan-500/10 text-cyan-400 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border border-cyan-500/20"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
-              </span>
-              Cybersecurity Enthusiast
-            </motion.div>
+            <div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-sm font-semibold text-[#013220] uppercase tracking-[0.2em] mb-4"
+              >
+                Cybersecurity Enthusiast
+              </motion.p>
 
-            <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black text-white leading-[1.1] tracking-tight">
-              Hi, I'm{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                Atikur Rahman
-              </span>
-              <br />
-              <span className="text-gray-400 font-semibold text-2xl md:text-3xl lg:text-4xl">
-                Aspiring Ethical Hacker & Security Researcher
-              </span>
-            </h1>
-
-            <p className="text-base md:text-lg text-gray-400 max-w-lg leading-relaxed">
-              Passionate about finding vulnerabilities before the bad guys do. 
-              I specialize in penetration testing, network security, and OSINT.
-              <span className="text-white font-medium"> Let's make the digital world safer.</span>
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-1">
-              <a href="#projects">
-                <Button variant="gradient" size="lg" className="gap-2 px-8 border-0 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/20">
-                  View My Work <ArrowRight size={18} />
-                </Button>
-              </a>
-              <a href="#contact">
-                <Button variant="outline" size="lg" className="bg-white/5 border-white/15 text-white hover:bg-white/10 hover:text-white backdrop-blur-sm">
-                  🔒 Contact Me
-                </Button>
-              </a>
+              <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.05] tracking-tight">
+                Securing the
+                <br />
+                <span className="text-[#013220]">digital world</span>
+              </h1>
             </div>
 
-            {/* Expertise Badges */}
-            <div className="flex items-center gap-5 pt-2 text-sm text-gray-500 font-medium flex-wrap">
-              {[
-                { icon: Shield, label: 'Penetration Testing', color: 'text-cyan-400' },
-                { icon: Network, label: 'Network Security', color: 'text-emerald-400' },
-                { icon: Eye, label: 'OSINT', color: 'text-violet-400' },
-              ].map(({ icon: Icon, label, color }, i) => (
-                <div key={i} className="flex items-center gap-1.5">
-                  <Icon className={`${color}`} size={14} />
-                  <span className="text-gray-400">{label}</span>
-                </div>
-              ))}
+            <p className="text-lg text-gray-500 max-w-md leading-relaxed">
+              I'm Atikur Rahman — an aspiring ethical hacker and security researcher 
+              from Bangladesh, specializing in penetration testing, network security, and OSINT.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <a
+                href="#projects"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold bg-[#013220] text-white rounded-lg hover:bg-[#024a2e] transition-colors"
+              >
+                View My Work <ArrowRight size={16} />
+              </a>
+              <a
+                href="#about"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold text-gray-700 border border-gray-200 rounded-lg hover:border-[#013220] hover:text-[#013220] transition-colors"
+              >
+                About Me
+              </a>
             </div>
           </motion.div>
 
-          {/* Visual Content — Cyber Terminal */}
+          {/* Portrait / Visual */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-            className="relative hidden lg:flex items-center justify-center"
+            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+            className="relative order-1 lg:order-2 flex justify-center"
           >
-            <div className="relative w-full max-w-md">
-              {/* Terminal Window */}
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-                className="rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10 border border-white/10 bg-gray-900"
-              >
-                {/* Terminal Header */}
-                <div className="flex items-center gap-2 px-4 py-3 bg-gray-800/80 border-b border-white/5">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
+            <div className="relative">
+              {/* Main portrait area */}
+              <div className="w-72 h-80 md:w-80 md:h-96 rounded-2xl overflow-hidden bg-gradient-to-br from-[#013220] to-[#024a2e] shadow-2xl shadow-[#013220]/20">
+                <div className="w-full h-full flex items-center justify-center">
+                  {/* Abstract cyber pattern instead of photo */}
+                  <div className="text-center space-y-4 p-8">
+                    <div className="w-20 h-20 mx-auto rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                      <span className="font-heading text-3xl font-bold text-white">AR</span>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="font-mono text-xs text-white/60">
+                        <div>$ whoami</div>
+                        <div className="text-white/90 mt-1">atikur_rahman</div>
+                      </div>
+                      <div className="font-mono text-xs text-white/60">
+                        <div>$ cat role.txt</div>
+                        <div className="text-white/90 mt-1">ethical_hacker</div>
+                      </div>
+                      <div className="font-mono text-xs text-white/60">
+                        <div>$ echo $LOCATION</div>
+                        <div className="text-white/90 mt-1">Kushtia, BD</div>
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-xs text-gray-500 ml-2 font-mono">atikur@kali:~</span>
                 </div>
-                {/* Terminal Content */}
-                <div className="p-5 font-mono text-sm space-y-2">
-                  <div className="text-gray-500">$ nmap -sV -sC target.com</div>
-                  <div className="text-green-400">Starting Nmap 7.94 ( https://nmap.org )</div>
-                  <div className="text-cyan-400">PORT    STATE SERVICE  VERSION</div>
-                  <div className="text-gray-300">22/tcp  open  ssh      OpenSSH 8.9</div>
-                  <div className="text-gray-300">80/tcp  open  http     Apache/2.4</div>
-                  <div className="text-yellow-400">443/tcp open  https    nginx 1.24</div>
-                  <div className="text-gray-500 mt-3">$ sqlmap -u "target.com/page?id=1"</div>
-                  <div className="text-red-400">[!] injectable parameter found</div>
-                  <motion.span
-                    animate={{ opacity: [1, 0] }}
-                    transition={{ repeat: Infinity, duration: 1 }}
-                    className="inline-block w-2 h-4 bg-cyan-400 ml-1"
-                  />
-                </div>
-              </motion.div>
+              </div>
 
-              {/* Floating Badge — Skills */}
+              {/* Floating accent shapes */}
               <motion.div
-                animate={{ y: [0, -10, 0] }}
+                animate={{ y: [0, -8, 0] }}
                 transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-                className="absolute -bottom-4 left-1/2 -translate-x-1/2 backdrop-blur-md bg-gray-900/90 rounded-2xl shadow-2xl border border-white/10 px-6 py-4 min-w-[220px] z-20"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
-                    <Bug size={18} className="text-white" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-black text-white">50+</div>
-                    <div className="text-xs font-semibold text-gray-400 tracking-wide">Bugs Reported</div>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Floating Badge — Tools */}
+                className="absolute -top-4 -right-4 w-20 h-20 rounded-xl bg-[#013220]/5 border border-[#013220]/10"
+              />
               <motion.div
                 animate={{ y: [0, 6, 0] }}
-                transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut', delay: 1 }}
-                className="absolute -top-2 -right-2 backdrop-blur-md bg-gray-900/90 rounded-xl shadow-xl border border-white/10 px-4 py-2.5 z-20"
-              >
-                <div className="flex items-center gap-2">
-                  <Terminal size={14} className="text-cyan-400" />
-                  <span className="text-sm font-bold text-white">Kali Linux</span>
-                </div>
-                <div className="text-[10px] text-gray-500 font-medium">Primary OS</div>
-              </motion.div>
-
-              {/* Lock Icon Badge */}
-              <motion.div
-                animate={{ y: [0, 8, 0] }}
-                transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut', delay: 0.5 }}
-                className="absolute top-1/4 -left-6 backdrop-blur-md bg-gray-900/90 rounded-xl shadow-xl border border-white/10 px-3 py-2 z-20"
-              >
-                <Lock size={20} className="text-emerald-400" />
-              </motion.div>
+                transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 1 }}
+                className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-[#013220]/5 border border-[#013220]/10"
+              />
             </div>
           </motion.div>
         </div>
-      </div>
 
-      {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-950 to-transparent" />
+        {/* Scroll indicator */}
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+          className="hidden lg:flex justify-center mt-16"
+        >
+          <a href="#about" className="flex flex-col items-center gap-2 text-gray-300 hover:text-[#013220] transition-colors">
+            <span className="text-xs font-medium uppercase tracking-widest">Scroll</span>
+            <ArrowDown size={16} />
+          </a>
+        </motion.div>
+      </div>
     </section>
   );
 }

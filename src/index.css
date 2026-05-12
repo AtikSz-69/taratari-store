@@ -1,23 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-brand-50: #fef2f2;
-  --color-brand-100: #fee2e2;
-  --color-brand-500: #ef4444;
-  --color-brand-600: #dc2626;
-  --color-brand-700: #b91c1c;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --color-brand-50: #e6f0ec;
+  --color-brand-100: #ccdfda;
+  --color-brand-500: #024a2e;
+  --color-brand-600: #013220;
+  --color-brand-700: #012518;
 }
 
 @layer base {
   body {
-    @apply antialiased bg-gray-50 text-gray-900;
+    @apply antialiased bg-white text-gray-900;
   }
 
   ::selection {
-    background-color: #dc26261a;
-    color: #b91c1c;
+    background-color: #01322033;
+    color: #013220;
+  }
+
+  /* Smooth scroll for anchor links */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
@@ -25,104 +31,56 @@
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ========== PREMIUM GRADIENT TEXT ========== */
-.gradient-text {
-  background: linear-gradient(135deg, #dc2626, #ea580c, #dc2626);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-shift 4s ease infinite;
+/* ========== SERIF HEADING UTILITY ========== */
+.font-heading {
+  font-family: "Playfair Display", Georgia, serif;
 }
 
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+/* ========== SUBTLE FADE-IN ========== */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s ease-out forwards;
 }
 
-/* ========== FLOATING ANIMATION ========== */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
+/* ========== SMOOTH HOVER LIFT ========== */
+.hover-lift {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
 }
-.animate-float { animation: float 5s ease-in-out infinite; }
-
-/* ========== PULSE GLOW FOR CTAs ========== */
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
-  50% { box-shadow: 0 0 24px 6px rgba(220, 38, 38, 0.12); }
-}
-.pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
-
-/* ========== SHIMMER LOADING ========== */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-.shimmer {
-  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,0.1);
 }
 
-/* ========== SMOOTH CARD IMAGE ZOOM ========== */
-.card-image-zoom {
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.group:hover .card-image-zoom {
-  transform: scale(1.08);
-}
-
-/* ========== GLASS MORPHISM ========== */
-.glass {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* ========== LIQUID GRADIENT BACKGROUND ========== */
-@keyframes liquid-gradient {
-  0% { background-position: 0% 50%; }
-  25% { background-position: 50% 0%; }
-  50% { background-position: 100% 50%; }
-  75% { background-position: 50% 100%; }
-  100% { background-position: 0% 50%; }
-}
-.liquid-gradient {
-  background: linear-gradient(-45deg, #dc2626, #ea580c, #f59e0b, #dc2626);
-  background-size: 300% 300%;
-  animation: liquid-gradient 8s ease infinite;
-}
-
-/* ========== BUTTON SHINE SWEEP ========== */
-@keyframes shine-sweep {
-  0% { left: -100%; }
-  100% { left: 200%; }
-}
-.btn-shine {
+/* ========== EDITORIAL UNDERLINE ========== */
+.editorial-underline {
   position: relative;
-  overflow: hidden;
+  display: inline;
 }
-.btn-shine::after {
+.editorial-underline::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  animation: shine-sweep 3s ease-in-out infinite;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background-color: #013220;
+  transition: width 0.3s ease;
+}
+.editorial-underline:hover::after {
+  width: 100%;
 }
 
-/* ========== MAGNETIC HOVER EFFECT ========== */
-.magnetic-hover {
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+/* ========== CLEAN CARD STYLE ========== */
+.card-clean {
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid #e5e7eb;
 }
-.magnetic-hover:hover {
-  transform: translateY(-2px) scale(1.02);
-}
-.magnetic-hover:active {
-  transform: translateY(0) scale(0.98);
+.card-clean:hover {
+  border-color: #013220;
+  box-shadow: 0 8px 30px -12px rgba(1,50,32,0.15);
 }
 
 /* ========== COUNTER ANIMATION ========== */
@@ -134,62 +92,27 @@
   animation: count-up 0.6s ease-out forwards;
 }
 
-/* ========== BENTO GRID ITEM HOVER ========== */
-.bento-item {
-  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.bento-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12);
-}
-
-/* ========== GRADIENT BORDER EFFECT ========== */
-.gradient-border {
+/* ========== TIMELINE LINE ========== */
+.timeline-line {
   position: relative;
-  background: white;
-  border-radius: 1rem;
 }
-.gradient-border::before {
+.timeline-line::before {
   content: '';
   position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, #dc2626, #ea580c, #f59e0b);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.gradient-border:hover::before {
-  opacity: 1;
+  left: 7px;
+  top: 24px;
+  bottom: 0;
+  width: 1px;
+  background: #d1d5db;
 }
 
-/* ========== SCROLL-TRIGGERED REVEAL ========== */
-.reveal-up {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+/* ========== GRADIENT TEXT (GREEN) ========== */
+.gradient-text {
+  background: linear-gradient(135deg, #013220, #024a2e, #036b42);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-.reveal-up.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ========== STAGGERED GRID CHILDREN ========== */
-.stagger-grid > * {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.stagger-grid.visible > *:nth-child(1) { transition-delay: 0ms; opacity: 1; transform: none; }
-.stagger-grid.visible > *:nth-child(2) { transition-delay: 80ms; opacity: 1; transform: none; }
-.stagger-grid.visible > *:nth-child(3) { transition-delay: 160ms; opacity: 1; transform: none; }
-.stagger-grid.visible > *:nth-child(4) { transition-delay: 240ms; opacity: 1; transform: none; }
-.stagger-grid.visible > *:nth-child(5) { transition-delay: 320ms; opacity: 1; transform: none; }
-.stagger-grid.visible > *:nth-child(6) { transition-delay: 400ms; opacity: 1; transform: none; }
 
 /* ========== NOISE TEXTURE OVERLAY ========== */
 .noise-overlay::after {
@@ -199,4 +122,11 @@
   opacity: 0.015;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   pointer-events: none;
+}
+
+/* ========== GLASS MORPHISM (LIGHT) ========== */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
