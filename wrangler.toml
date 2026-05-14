@@ -5,4 +5,4 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "taratari_db"
-database_id = "668d8eff-1af1-48e1-8993-6557a1b4a2a9"
+database_id = "d113ad9b-54bf-4464-9374-5329f3a52f20"
