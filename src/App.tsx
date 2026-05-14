@@ -13,36 +13,36 @@ import { ExternalLink, Github, Shield, Terminal, Globe, Lock } from 'lucide-reac
 
 const PROJECTS = [
   {
-    title: 'Network Vulnerability Scanner',
-    description: 'Automated tool built with Python to scan networks for common vulnerabilities, open ports, and misconfigured services.',
-    tags: ['Python', 'Nmap', 'Scapy'],
+    title: 'Network Security Monitor',
+    description: 'An automated Python tool that monitors network health, detects anomalies, and ensures infrastructure stays protected around the clock.',
+    tags: ['Python', 'Networking', 'Automation'],
     icon: Shield,
   },
   {
-    title: 'Web App Penetration Toolkit',
-    description: 'Custom toolkit for testing OWASP Top 10 vulnerabilities including SQL injection, XSS, and CSRF on web applications.',
-    tags: ['Burp Suite', 'SQLMap', 'Python'],
+    title: 'Web Security Analyzer',
+    description: 'A comprehensive testing toolkit that helps organizations identify and fix security gaps in their web applications before they become problems.',
+    tags: ['Security', 'Web Apps', 'Python'],
     icon: Terminal,
   },
   {
-    title: 'OSINT Reconnaissance Framework',
-    description: 'Open-source intelligence gathering tool that aggregates data from multiple sources for digital footprint analysis.',
-    tags: ['Python', 'Maltego', 'Shodan'],
+    title: 'Digital Intelligence Platform',
+    description: 'An open-source intelligence platform that aggregates publicly available data to help researchers understand digital footprints and online presence.',
+    tags: ['Python', 'Data Analysis', 'OSINT'],
     icon: Globe,
   },
   {
-    title: 'Password Cracking Lab',
-    description: 'Educational lab environment for understanding password security, hash cracking techniques, and credential stuffing prevention.',
-    tags: ['Hashcat', 'John', 'Wordlists'],
+    title: 'Cryptography Learning Lab',
+    description: 'An interactive educational environment for understanding encryption, secure communications, and modern cryptographic protocols.',
+    tags: ['Cryptography', 'Education', 'Security'],
     icon: Lock,
   },
 ];
 
 const MILESTONES = [
-  { year: '2024', title: 'Started Cybersecurity Journey', desc: 'Began self-learning ethical hacking and network security fundamentals.' },
-  { year: '2024', title: 'First CTF Competition', desc: 'Participated in TryHackMe and HackTheBox challenges.' },
-  { year: '2025', title: 'Bug Bounty Programs', desc: 'Started reporting vulnerabilities in real-world applications.' },
-  { year: '2026', title: 'Building Security Tools', desc: 'Developing custom penetration testing and reconnaissance tools.' },
+  { year: '2024', title: 'Discovered My Passion', desc: 'Fell in love with technology and cybersecurity — started my self-learning journey.' },
+  { year: '2024', title: 'First Security Challenge', desc: 'Participated in my first Capture The Flag competition and got hooked on problem-solving.' },
+  { year: '2025', title: 'Contributing to Safety', desc: 'Started responsibly reporting security issues to help organizations protect their users.' },
+  { year: '2026', title: 'Building & Creating', desc: 'Developing my own security tools and sharing knowledge with the community.' },
 ];
 
 export default function App() {
@@ -74,26 +74,35 @@ export default function App() {
                     About Me
                   </p>
                   <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mb-6 leading-tight">
-                    Passionate about finding<br />
-                    <span className="text-[#013220]">vulnerabilities</span> before<br />
-                    the bad guys do.
+                    Driven by curiosity,<br />
+                    <span className="text-[#013220]">powered by</span><br />
+                    passion for technology.
                   </h2>
                   <div className="space-y-4 text-gray-500 text-base leading-relaxed">
                     <p>
-                      I'm <span className="text-gray-900 font-semibold">Atikur Rahman</span>, a cybersecurity 
-                      enthusiast from Kushtia, Bangladesh. My journey into security began with a simple question: 
-                      <em className="text-gray-700"> "How do hackers think?"</em>
+                      I'm <span className="text-gray-900 font-semibold">Atikur Rahman</span>, a creative 
+                      technologist from Kushtia, Bangladesh. My journey into tech began with a simple curiosity: 
+                      <em className="text-gray-700"> "How does the digital world really work?"</em>
                     </p>
                     <p>
-                      That curiosity led me down a path of learning Kali Linux, mastering network protocols, 
-                      and understanding how vulnerabilities are discovered and exploited — all to help 
-                      organizations defend against real-world threats.
+                      That curiosity led me to explore cybersecurity, software development, 
+                      and digital innovation — learning how systems work, how to protect them, 
+                      and how to build meaningful solutions for real-world problems.
                     </p>
                     <p>
-                      Currently pursuing my education while actively participating in CTF competitions, 
-                      bug bounty programs, and building security tools. I believe in making 
-                      the digital world safer, one vulnerability at a time.
+                      Currently pursuing my education while actively participating in security challenges, 
+                      building creative tools, and contributing to the tech community. I believe in 
+                      using technology to create positive impact.
                     </p>
+                  </div>
+                  
+                  {/* Personal Editorial Photo */}
+                  <div className="mt-10 rounded-2xl overflow-hidden border border-gray-100 shadow-xl shadow-[#013220]/5 relative group max-w-sm">
+                    <img 
+                      src="/about-portrait.jpg" 
+                      alt="Atikur Personal" 
+                      className="w-full h-[280px] object-cover group-hover:scale-105 transition-transform duration-700 ease-out" 
+                    />
                   </div>
                 </motion.div>
 

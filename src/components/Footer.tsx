@@ -12,7 +12,7 @@ export default function Footer() {
               Atikur Rahman
             </h3>
             <p className="text-sm text-gray-500 leading-relaxed">
-              Cybersecurity enthusiast & aspiring ethical hacker from Bangladesh.
+              Creative technologist & cybersecurity enthusiast from Bangladesh.
             </p>
             <div className="flex gap-2.5 pt-1">
               {[

@@ -1,6 +1,9 @@
 import { ArrowRight, ArrowDown } from 'lucide-react';
 import { motion } from 'motion/react';
 
+// Replace this URL with your personal photo
+const PROFILE_IMAGE = '/hero-portrait.jpg';
+
 export default function Hero() {
   return (
     <section className="relative bg-white overflow-hidden">
@@ -21,19 +24,20 @@ export default function Hero() {
                 transition={{ delay: 0.2 }}
                 className="text-sm font-semibold text-[#013220] uppercase tracking-[0.2em] mb-4"
               >
-                Cybersecurity Enthusiast
+                Creative Technologist
               </motion.p>
 
               <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-[1.05] tracking-tight">
-                Securing the
+                Hi, I'm
                 <br />
-                <span className="text-[#013220]">digital world</span>
+                <span className="text-[#013220]">Atikur Rahman</span>
               </h1>
             </div>
 
             <p className="text-lg text-gray-500 max-w-md leading-relaxed">
-              I'm Atikur Rahman — an aspiring ethical hacker and security researcher 
-              from Bangladesh, specializing in penetration testing, network security, and OSINT.
+              A passionate tech enthusiast and creative mind from Bangladesh — 
+              specializing in cybersecurity, digital innovation, and building 
+              things that make an impact.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
@@ -52,7 +56,7 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Portrait / Visual */}
+          {/* Animated Portrait — like alejavirivera.com */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -60,43 +64,49 @@ export default function Hero() {
             className="relative order-1 lg:order-2 flex justify-center"
           >
             <div className="relative">
-              {/* Main portrait area */}
-              <div className="w-72 h-80 md:w-80 md:h-96 rounded-2xl overflow-hidden bg-gradient-to-br from-[#013220] to-[#024a2e] shadow-2xl shadow-[#013220]/20">
-                <div className="w-full h-full flex items-center justify-center">
-                  {/* Abstract cyber pattern instead of photo */}
-                  <div className="text-center space-y-4 p-8">
-                    <div className="w-20 h-20 mx-auto rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                      <span className="font-heading text-3xl font-bold text-white">AR</span>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="font-mono text-xs text-white/60">
-                        <div>$ whoami</div>
-                        <div className="text-white/90 mt-1">atikur_rahman</div>
-                      </div>
-                      <div className="font-mono text-xs text-white/60">
-                        <div>$ cat role.txt</div>
-                        <div className="text-white/90 mt-1">ethical_hacker</div>
-                      </div>
-                      <div className="font-mono text-xs text-white/60">
-                        <div>$ echo $LOCATION</div>
-                        <div className="text-white/90 mt-1">Kushtia, BD</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Main portrait with floating animation */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
+                className="w-72 h-80 md:w-80 md:h-[420px] rounded-2xl overflow-hidden shadow-2xl shadow-[#013220]/15"
+              >
+                <img
+                  src={PROFILE_IMAGE}
+                  alt="Atikur Rahman"
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </motion.div>
 
               {/* Floating accent shapes */}
               <motion.div
-                animate={{ y: [0, -8, 0] }}
+                animate={{ y: [0, -12, 0] }}
                 transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-                className="absolute -top-4 -right-4 w-20 h-20 rounded-xl bg-[#013220]/5 border border-[#013220]/10"
+                className="absolute -top-5 -right-5 w-24 h-24 rounded-2xl bg-[#013220]/5 border border-[#013220]/10 -z-10"
               />
               <motion.div
-                animate={{ y: [0, 6, 0] }}
+                animate={{ y: [0, 8, 0] }}
                 transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 1 }}
-                className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-[#013220]/5 border border-[#013220]/10"
+                className="absolute -bottom-5 -left-5 w-20 h-20 rounded-full bg-[#013220]/5 border border-[#013220]/10 -z-10"
               />
+
+              {/* Small floating badge */}
+              <motion.div
+                animate={{ y: [0, -6, 0] }}
+                transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut', delay: 0.5 }}
+                className="absolute -bottom-3 right-4 bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 z-10"
+              >
+                <div className="text-xs font-semibold text-[#013220]">🇧🇩 Kushtia, Bangladesh</div>
+              </motion.div>
+
+              {/* Top-right floating badge */}
+              <motion.div
+                animate={{ y: [0, 6, 0] }}
+                transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut', delay: 1.5 }}
+                className="absolute -top-2 -left-3 bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 z-10"
+              >
+                <div className="text-xs font-semibold text-gray-700">✨ Creative Technologist</div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
