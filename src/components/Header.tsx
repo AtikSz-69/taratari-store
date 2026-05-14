@@ -1,9 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import { Menu, X, LogOut, ChevronDown, LayoutDashboard } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useAuth } from '@/context/AuthContext';
-
-const GOOGLE_CLIENT_ID = '655077512151-ja821huu8qidamfcu0v1hnkkfhk6fhfu.apps.googleusercontent.com';
 
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
@@ -14,53 +11,12 @@ const NAV_LINKS = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { user, signIn, signOut } = useAuth();
-  const googleBtnRef = useRef<HTMLDivElement>(null);
-  const googleMobileBtnRef = useRef<HTMLDivElement>(null);
-  const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (user) return;
-    const initGoogleSignIn = () => {
-      if (!window.google?.accounts?.id) return;
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: async (response) => {
-          try { await signIn(response.credential); } catch (err) { console.error('Sign-in failed:', err); }
-        },
-        auto_select: false,
-        context: 'signin',
-      });
-      if (googleBtnRef.current) {
-        googleBtnRef.current.innerHTML = '';
-        window.google.accounts.id.renderButton(googleBtnRef.current, { type: 'standard', theme: 'outline', size: 'medium', text: 'signin', shape: 'rectangular', logo_alignment: 'left', width: 140 });
-      }
-      if (googleMobileBtnRef.current) {
-        googleMobileBtnRef.current.innerHTML = '';
-        window.google.accounts.id.renderButton(googleMobileBtnRef.current, { type: 'standard', theme: 'filled_blue', size: 'large', text: 'signin_with', shape: 'rectangular', width: 260 });
-      }
-    };
-    if (window.google?.accounts?.id) { initGoogleSignIn(); }
-    else {
-      const interval = setInterval(() => { if (window.google?.accounts?.id) { initGoogleSignIn(); clearInterval(interval); } }, 200);
-      return () => clearInterval(interval);
-    }
-  }, [user, signIn, isMenuOpen]);
-
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) setIsProfileOpen(false);
-    }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
   return (
@@ -89,50 +45,6 @@ export default function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
-            {user ? (
-              <div className="relative hidden sm:block" ref={profileRef}>
-                <button
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <img src={user.picture} alt={user.name} className="w-8 h-8 rounded-full border border-gray-200" referrerPolicy="no-referrer" />
-                  <span className="text-sm font-medium text-gray-700 max-w-[80px] truncate">{user.firstName}</span>
-                  <ChevronDown size={14} className={`text-gray-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
-                </button>
-                <AnimatePresence>
-                  {isProfileOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50"
-                    >
-                      <div className="p-3 border-b border-gray-50">
-                        <div className="flex items-center gap-2.5">
-                          <img src={user.picture} alt={user.name} className="w-9 h-9 rounded-full" referrerPolicy="no-referrer" />
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
-                            <p className="text-xs text-gray-400 truncate">{user.email}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="p-1.5">
-                        <button onClick={() => { window.dispatchEvent(new Event('open-dashboard')); setIsProfileOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                          <LayoutDashboard size={15} /> My Account
-                        </button>
-                        <button onClick={() => { signOut(); setIsProfileOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors">
-                          <LogOut size={15} /> Sign Out
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <div className="hidden sm:block" ref={googleBtnRef} />
-            )}
-
             <a href="#contact" className="hidden md:inline-flex items-center px-5 py-2.5 text-sm font-semibold bg-[#013220] text-white rounded-lg hover:bg-[#024a2e] transition-colors">
               Let's Talk
             </a>
@@ -159,19 +71,6 @@ export default function Header() {
                 <button className="p-1 text-gray-500" onClick={() => setIsMenuOpen(false)}><X size={20} /></button>
               </div>
               <div className="p-5 flex flex-col gap-3 flex-1">
-                {user ? (
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 mb-2">
-                    <img src={user.picture} alt={user.name} className="w-9 h-9 rounded-full" referrerPolicy="no-referrer" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate">{user.name}</p>
-                      <p className="text-xs text-gray-400 truncate">{user.email}</p>
-                    </div>
-                    <button onClick={() => { window.dispatchEvent(new Event('open-dashboard')); setIsMenuOpen(false); }} className="p-2 text-gray-400 hover:text-[#013220]"><LayoutDashboard size={16} /></button>
-                    <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="p-2 text-red-400"><LogOut size={16} /></button>
-                  </div>
-                ) : (
-                  <div className="flex justify-center mb-3" ref={googleMobileBtnRef} />
-                )}
                 {NAV_LINKS.map((link) => (
                   <a key={link.label} href={link.href} onClick={() => setIsMenuOpen(false)} className="py-3 px-2 text-gray-700 font-medium border-b border-gray-50 hover:text-[#013220] transition-colors">
                     {link.label}

@@ -1,13 +1,8 @@
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
-import Newsletter from '@/components/Newsletter';
-import AdminPanel from '@/components/AdminPanel';
 import BentoGrid from '@/components/BentoGrid';
 import StatsBar from '@/components/StatsBar';
-import UserDashboard from '@/components/UserDashboard';
-import { AuthProvider } from '@/context/AuthContext';
-import { CartProvider } from '@/context/CartContext';
 import { motion } from 'motion/react';
 import { ExternalLink, Github, Shield, Terminal, Globe, Lock } from 'lucide-react';
 
@@ -47,12 +42,8 @@ const MILESTONES = [
 
 export default function App() {
   return (
-    <AuthProvider>
-    <CartProvider>
       <div className="min-h-screen bg-white font-sans text-gray-900 flex flex-col">
         <Header />
-        <AdminPanel />
-        <UserDashboard />
 
         <main className="flex-1">
           <Hero />
@@ -214,14 +205,9 @@ export default function App() {
               </div>
             </div>
           </section>
-
-          {/* Newsletter */}
-          <Newsletter />
         </main>
 
         <Footer />
       </div>
-    </CartProvider>
-    </AuthProvider>
   );
 }
